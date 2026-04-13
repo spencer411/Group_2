@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+RAW_DIR="data/raw"
+OUT_DIR="results/fastp"
+THREADS="${THREADS:-4}"   
+
+
+PHRED="33"          
+MIN_LEN="50"        
+QUAL_CUTOFF="20"    
+WINDOW_SIZE="4"     
+
+mkdir -p "${OUT_DIR}"
+
+found_any=false
+
+for r1 in "${RAW_DIR}"/*_R1*.fastq "${RAW_DIR}"/*_R1*.fq "${RAW_DIR}"/*_R1*.fastq.gz "${RAW_DIR}"/*_R1*.fq.gz; do
+  [ -e "$r1" ] || continue
+  found_any=true
+
+  base="$(basename "${r1}")"
+
+  sample="${base%%_R1*}"
+
+  r2_suffix="${base#*_R1}"                
+  r2="${RAW_DIR}/${sample}_R2${r2_suffix}" 
+
+  if [ ! -f "${r2}" ]; then
+    echo " R2 for sample '${sample}' is missing."
+    continue
+  fi
+
+  out_r1="${OUT_DIR}/${sample}.clean.R1.fastq.gz"
+  out_r2="${OUT_DIR}/${sample}.clean.R2.fastq.gz"
+  html="${OUT_DIR}/${sample}.fastp.html"
+  json="${OUT_DIR}/${sample}.fastp.json"
+  log="${OUT_DIR}/${sample}.fastp.log"
+
+  echo "  - ${sample}"
+  fastp \
+    -i "${r1}" \
+    -I "${r2}" \
+    -o "${out_r1}" \
+    -O "${out_r2}" \
+    --thread "${THREADS}" \
+    --detect_adapter_for_pe \
+    --qualified_quality_phred "${QUAL_CUTOFF}" \
+    --cut_window_size "${WINDOW_SIZE}" \
+    --cut_mean_quality "${QUAL_CUTOFF}" \
+    --length_required "${MIN_LEN}" \
+    --phred_offset "${PHRED}" \
+    --html "${html}" \
+    --json "${json}" \
+    --report_title "${sample} fastp report" \
+    > "${log}" 2>&1
+done
+
+if ! $found_any; then
+  echo "No paired-end R1 files found in ${RAW_DIR}"
+  exit 1
+fi
+
+echo "fastp complete. data in ${OUT_DIR}"
