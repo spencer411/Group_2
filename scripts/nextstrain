@@ -29,7 +29,6 @@ nextstrain shell .
 augur tree --alignment $temp_file_directory/alignment.vcf --output $temp_file_directory/tree_raw.nwk --vcf-reference $reference_fasta
 augur refine --tree $temp_file_directory/tree_raw.nwk --alignment $temp_file_directory/alignment.vcf --metadata $samples_metadata --output-tree $temp_file_directory/tree.nwk --output-node-data $temp_file_directory/branch_lengths.json --vcf-reference $reference_fasta --timetree --coalescent opt --stochastic-resolve 
 augur export v2 --tree $temp_file_directory/tree.nwk --metadata $samples_metadata --node-data $temp_file_directory/branch_lengths.json --output $output_directory/final_tree.json --auspice-config auspice-config-custom-data.json
-exit
 
 #View tree
 auspice view --datasetDir $output_directory
