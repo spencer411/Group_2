@@ -1,0 +1,77 @@
+{
+  "title": "Francisella tularensis",
+  "maintainers": [
+    {
+      "name": "Hackathon Team 2",
+      "url": "https://github.com/APHL-Infectious-Disease/Group_2"
+    }
+  ],
+  "colorings": [
+    {
+      "key": "subspecies",
+      "title": "subspecies",
+      "type": "categorical",
+      "scale": [
+        [
+          "holarctica",
+          "#1E88E5"
+        ],
+        [
+          "tularensis",
+          "#9C1616"
+        ],
+        [
+          "mediasiatica",
+          "#FFC107"
+        ]
+      ]
+    },
+    {
+      "key": "country",
+      "title": "country",
+      "type": "categorical"
+    },
+    {
+      "key": "date",
+      "title": "date",
+      "type": "continuous"
+    },
+    {
+      "key": "strain",
+      "title": "strain",
+      "type": "categorical"
+    },
+    {
+      "key": "source",
+      "title": "source",
+      "type": "categorical"
+    },
+    {
+      "key": "type",
+      "title": "type",
+      "type": "categorical"
+    }
+  ],
+  "geo_resolutions": [
+    "country"
+  ],
+  "display_defaults": {
+    "color_by": "subspecies",
+    "distance_measure": "num_date",
+    "geo_resolution": "country",
+    "map_triplicate": true
+  },
+  "filters": [
+    "country",
+    "subspecies",
+    "source",
+    "strain",
+    "type"
+  ],
+  "panels": [
+    "tree",
+    "map",
+    "entropy",
+    "frequencies"
+  ]
+}
