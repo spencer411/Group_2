@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#Genome Analysis Toolkit (GATK) for variant calling
+
+#Variables
+input_bam_file="data/sample.bam"
+output_directory="results/gatk_output"
+reference_fasta="data/reference.fasta"
+
+gatk Mutect2 -I $input_bam_file -O $output_directory/unfiltered.vcf.gz -R $reference_fasta 
+gatk FilterMutectCalls --microbial-mode -V $output_directory/unfiltered.vcf.gz -R $reference_fasta -stats $output_directory/unfiltered.vcf.stats -O $output_directory/filtered.vcf 
