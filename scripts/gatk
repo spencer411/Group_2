@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 #Genome Analysis Toolkit (GATK) for variant calling
 
+#Docker images required: gatk, samtools
+
 #Variables
 input_bam_file="data/sample.bam"
 output_directory="results/gatk_output"
 reference_fasta="data/reference.fasta"
 
+#Create reference dictionary and reference index (gatk will look for this in the same directory as the reference fasta)
+gatk CreateSequenceDictionary -R $reference_fasta
+samtools faidx ref.fasta
+
+#Variant calling (Mutect2 is preferred over HaplotypeCaller for prokaryotic genomes due to uneven read depths, intra-sample variation, and low frequency variants)
 gatk Mutect2 -I $input_bam_file -O $output_directory/unfiltered.vcf.gz -R $reference_fasta 
+
+#Filter the output of Mutect2
 gatk FilterMutectCalls --microbial-mode -V $output_directory/unfiltered.vcf.gz -R $reference_fasta -stats $output_directory/unfiltered.vcf.stats -O $output_directory/filtered.vcf 
