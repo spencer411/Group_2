@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ASSEMBLY_DIR="data/assemblies"  
+OUT_DIR="results/amrfinderplus"
+
+THREADS="${THREADS:-4}"       
+
+IDENT_MIN="0.9"                  
+COV_MIN="0.5"                    
+TRANSLATION_TABLE="11"           
+
+mkdir -p "${OUT_DIR}"
+
+found_any=false
+
+for assembly in "${ASSEMBLY_DIR}"/*.fasta \
+                "${ASSEMBLY_DIR}"/*.fa    \
+                "${ASSEMBLY_DIR}"/*.fna; do
+  [ -e "$assembly" ] || continue
+  found_any=true
+
+  base="$(basename "${assembly}")"
+  sample="${base%%.*}"          
+
+  out_tsv="${OUT_DIR}/${sample}.amrfinderplus.tsv"
+  log="${OUT_DIR}/${sample}.amrfinderplus.log"
+
+  echo "  - ${sample}"
+
+  amrfinder \
+    --nucleotide "${assembly}" \
+    --output     "${out_tsv}"  \
+    --threads    "${THREADS}"  \
+    --ident_min  "${IDENT_MIN}" \
+    --coverage_min "${COV_MIN}" \
+    --plus \
+    > "${log}" 2>&1
+
+done
+
+if ! $found_any; then
+  echo "No assembly files found in ${ASSEMBLY_DIR}"
+  exit 1
+fi
+
+echo "AMRFinderPlus complete. Results in ${OUT_DIR}"
