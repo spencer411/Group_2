@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+READ1=$1
+READ2=$2
+
 RAW_DIR="data/raw"
 OUT_DIR="results/fastp"
 THREADS="${THREADS:-4}"   
