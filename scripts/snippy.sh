@@ -7,7 +7,7 @@ set -euo pipefail
 CONTIG_FILES="$(find -type f -name "*contigs.fa)"
 
 # reference selected from NC_007880.1, based on cgMLST database
-REFERENCE="LVS.gbk"
+REFERENCE="database_files/LVS.gbk"
 
 # creates tab delimited file needed for snippy-multi
 file_to_create="input.tab"
